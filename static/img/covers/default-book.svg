@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+    <defs>
+        <linearGradient id="bgGradDefault" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e1b4b" />
+            <stop offset="50%" stop-color="#0f172a" />
+            <stop offset="100%" stop-color="#1e293b" />
+        </linearGradient>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fbbf24" />
+            <stop offset="50%" stop-color="#f59e0b" />
+            <stop offset="100%" stop-color="#d97706" />
+        </linearGradient>
+        <radialGradient id="glowDefault" cx="50%" cy="40%" r="55%">
+            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#0f172a" stop-opacity="0" />
+        </radialGradient>
+        <filter id="shadowDefault" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.5"/>
+        </filter>
+    </defs>
+
+    <!-- Fondo de Portada -->
+    <rect width="400" height="600" fill="url(#bgGradDefault)"/>
+    <rect width="400" height="600" fill="url(#glowDefault)"/>
+
+    <!-- Lomo del libro con efecto 3D -->
+    <rect x="0" y="0" width="18" height="600" fill="#000000" opacity="0.35"/>
+    <line x1="18" y1="0" x2="18" y2="600" stroke="#ffffff" stroke-width="1" opacity="0.15"/>
+    <line x1="22" y1="0" x2="22" y2="600" stroke="#000000" stroke-width="1.5" opacity="0.3"/>
+
+    <!-- Marcos decorativos editoriales -->
+    <rect x="30" y="24" width="340" height="552" rx="12" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.6"/>
+    <rect x="36" y="30" width="328" height="540" rx="8" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3"/>
+
+    <!-- Encabezado de la Colección -->
+    <text x="200" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="0.25em">MEBYTECH LIBRIS • COLECCIÓN</text>
+    <line x1="120" y1="78" x2="280" y2="78" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.75"/>
+
+    <!-- Arte Central: Libro Abierto y Pluma Iluminada -->
+    <g filter="url(#shadowDefault)">
+        <!-- Aura central -->
+        <circle cx="200" cy="225" r="75" fill="#6366f1" opacity="0.15"/>
+        <circle cx="200" cy="225" r="55" fill="#fbbf24" opacity="0.1"/>
+
+        <!-- Libro Abierto -->
+        <path d="M 135 245 C 160 230, 185 235, 200 248 C 215 235, 240 230, 265 245 L 265 200 C 240 185, 215 190, 200 203 C 185 190, 160 185, 135 200 Z" fill="#ffffff" opacity="0.95"/>
+        <path d="M 200 203 L 200 248" stroke="#1e1b4b" stroke-width="2.5" opacity="0.6"/>
+        
+        <!-- Líneas simuladas de texto en páginas -->
+        <line x1="145" y1="210" x2="185" y2="207" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="145" y1="220" x2="188" y2="217" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="145" y1="230" x2="180" y2="228" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="212" y1="207" x2="255" y2="210" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="212" y1="217" x2="255" y2="220" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="220" y1="228" x2="255" y2="230" stroke="#cbd5e1" stroke-width="1.5"/>
+
+        <!-- Pluma estilizada sobre el libro -->
+        <path d="M 225 150 C 220 170, 210 195, 195 210 C 205 200, 215 180, 228 152 Z" fill="url(#goldGrad)"/>
+        <line x1="228" y1="150" x2="195" y2="210" stroke="#fbbf24" stroke-width="1.5"/>
+
+        <!-- Estrellas decorativas / Destellos -->
+        <circle cx="160" cy="165" r="2" fill="#fbbf24" opacity="0.8"/>
+        <circle cx="240" cy="170" r="2.5" fill="#6366f1" opacity="0.9"/>
+        <circle cx="200" cy="140" r="3" fill="#fbbf24"/>
+        <polygon points="200,132 202,138 208,140 202,142 200,148 198,142 192,140 198,138" fill="#fbbf24" opacity="0.9"/>
+    </g>
+
+    <!-- Título de Obra / Ejemplar -->
+    <text x="200" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="0.08em">OBRA LITERARIA</text>
+    <text x="200" y="375" font-family="Georgia, serif" font-size="14" font-style="italic" fill="#cbd5e1" text-anchor="middle">Edición Registrada</text>
+
+    <!-- Línea divisoria dorada con rombo central -->
+    <line x1="80" y1="415" x2="185" y2="415" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+    <polygon points="200,410 205,415 200,420 195,415" fill="#fbbf24"/>
+    <line x1="215" y1="415" x2="320" y2="415" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+
+    <!-- Etiqueta inferior de MebyTech Libris -->
+    <text x="200" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle" letter-spacing="0.15em">BIBLIOTECA PÚBLICA</text>
+    <text x="200" y="482" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="500" fill="#64748b" text-anchor="middle">SISTEMA TRANSACCIONAL 3NF</text>
+</svg>

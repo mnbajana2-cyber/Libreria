@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+    <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0a071b" />
+            <stop offset="100%" stop-color="#000000" />
+        </linearGradient>
+        <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8b5cf6" />
+            <stop offset="100%" stop-color="#c084fc" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+            <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+        </radialGradient>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+        </filter>
+    </defs>
+
+    <!-- Fondo de Libro con Gradiente -->
+    <rect width="400" height="600" fill="url(#bgGrad)"/>
+    <rect width="400" height="600" fill="url(#glow)"/>
+
+    <!-- Lomo de libro lateral (efecto relieve 3D) -->
+    <rect x="0" y="0" width="18" height="600" fill="#000000" opacity="0.35"/>
+    <line x1="18" y1="0" x2="18" y2="600" stroke="#ffffff" stroke-width="1" opacity="0.15"/>
+    <line x1="22" y1="0" x2="22" y2="600" stroke="#000000" stroke-width="1.5" opacity="0.3"/>
+
+    <!-- Marco decorativo exterior -->
+    <rect x="30" y="24" width="340" height="552" rx="12" fill="none" stroke="#8b5cf6" stroke-width="1.5" opacity="0.4"/>
+    <rect x="36" y="30" width="328" height="540" rx="8" fill="none" stroke="#c084fc" stroke-width="0.75" opacity="0.25"/>
+
+    <!-- Encabezado: Colección y Año -->
+    <text x="200" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle" letter-spacing="0.2em">MEBYTECH LIBRIS • 1968</text>
+    <line x1="120" y1="78" x2="280" y2="78" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.8"/>
+
+    <!-- Arte Central / Iconografía Conceptual -->
+    <g filter="url(#shadow)">
+        
+            <!-- Monolito negro alienígena y alineación cósmica -->
+            <circle cx="200" cy="180" r="50" fill="none" stroke="#a855f7" stroke-width="1.5" opacity="0.4"/>
+            <ellipse cx="200" cy="180" rx="70" ry="15" fill="none" stroke="#c084fc" stroke-width="1" opacity="0.3"/>
+            <!-- El Monolito (proporción 1:4:9) -->
+            <rect x="182" y="210" width="36" height="110" rx="1" fill="#000" stroke="#a855f7" stroke-width="2"/>
+            <rect x="185" y="213" width="30" height="104" fill="#0f0728"/>
+            <circle cx="200" cy="180" r="16" fill="#e9d5ff" opacity="0.9"/>
+            <circle cx="200" cy="150" r="4" fill="#fff"/>
+        
+    </g>
+
+    <!-- Título de la Obra -->
+    <g filter="url(#shadow)">
+        <text x="200" y="375" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">2001: Una odisea</text>
+<text x="200" y="401" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">espacial</text>
+
+    </g>
+
+    <!-- Separador decorativo inferior -->
+    <line x1="150" y1="465" x2="250" y2="465" stroke="url(#accentGrad)" stroke-width="2"/>
+    <circle cx="200" cy="465" r="3.5" fill="#8b5cf6"/>
+
+    <!-- Autor -->
+    <text x="200" y="500" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1" text-anchor="middle" letter-spacing="0.05em">Arthur C. Clarke</text>
+
+    <!-- Pastilla de Género -->
+    <rect x="110" y="522" width="180" height="24" rx="12" fill="#0a071b" stroke="#8b5cf6" stroke-width="1" opacity="0.9"/>
+    <text x="200" y="538" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#c084fc" text-anchor="middle">Ciencia Ficción Hard</text>
+
+</svg>

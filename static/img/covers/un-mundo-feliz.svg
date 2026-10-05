@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600">
+    <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#064e3b" />
+            <stop offset="100%" stop-color="#022c22" />
+        </linearGradient>
+        <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#10b981" />
+            <stop offset="100%" stop-color="#6ee7b7" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+            <stop offset="0%" stop-color="#10b981" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#022c22" stop-opacity="0" />
+        </radialGradient>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+        </filter>
+    </defs>
+
+    <!-- Fondo de Libro con Gradiente -->
+    <rect width="400" height="600" fill="url(#bgGrad)"/>
+    <rect width="400" height="600" fill="url(#glow)"/>
+
+    <!-- Lomo de libro lateral (efecto relieve 3D) -->
+    <rect x="0" y="0" width="18" height="600" fill="#000000" opacity="0.35"/>
+    <line x1="18" y1="0" x2="18" y2="600" stroke="#ffffff" stroke-width="1" opacity="0.15"/>
+    <line x1="22" y1="0" x2="22" y2="600" stroke="#000000" stroke-width="1.5" opacity="0.3"/>
+
+    <!-- Marco decorativo exterior -->
+    <rect x="30" y="24" width="340" height="552" rx="12" fill="none" stroke="#10b981" stroke-width="1.5" opacity="0.4"/>
+    <rect x="36" y="30" width="328" height="540" rx="8" fill="none" stroke="#6ee7b7" stroke-width="0.75" opacity="0.25"/>
+
+    <!-- Encabezado: Colección y Año -->
+    <text x="200" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#6ee7b7" text-anchor="middle" letter-spacing="0.2em">MEBYTECH LIBRIS • 1932</text>
+    <line x1="120" y1="78" x2="280" y2="78" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.8"/>
+
+    <!-- Arte Central / Iconografía Conceptual -->
+    <g filter="url(#shadow)">
+        
+            <!-- Tubo de acondicionamiento y píldora de Soma -->
+            <rect x="175" y="195" width="50" height="90" rx="25" fill="none" stroke="#34d399" stroke-width="2.5"/>
+            <!-- Mitad de la cápsula -->
+            <path d="M175 240 L225 240 L225 260 C225 273 214 285 200 285 C186 285 175 273 175 260 Z" fill="#10b981" opacity="0.7"/>
+            <circle cx="200" cy="220" r="8" fill="#a7f3d0"/>
+            <line x1="160" y1="240" x2="240" y2="240" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <!-- Estructura molecular -->
+            <circle cx="150" cy="180" r="5" fill="#34d399"/>
+            <circle cx="250" cy="180" r="5" fill="#34d399"/>
+            <line x1="155" y1="183" x2="175" y2="200" stroke="#059669" stroke-width="1.5"/>
+            <line x1="245" y1="183" x2="225" y2="200" stroke="#059669" stroke-width="1.5"/>
+        
+    </g>
+
+    <!-- Título de la Obra -->
+    <g filter="url(#shadow)">
+        <text x="200" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.02em">Un mundo feliz</text>
+
+    </g>
+
+    <!-- Separador decorativo inferior -->
+    <line x1="150" y1="465" x2="250" y2="465" stroke="url(#accentGrad)" stroke-width="2"/>
+    <circle cx="200" cy="465" r="3.5" fill="#10b981"/>
+
+    <!-- Autor -->
+    <text x="200" y="500" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1" text-anchor="middle" letter-spacing="0.05em">Aldous Huxley</text>
+
+    <!-- Pastilla de Género -->
+    <rect x="110" y="522" width="180" height="24" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1" opacity="0.9"/>
+    <text x="200" y="538" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="700" fill="#6ee7b7" text-anchor="middle">Ciencia Ficción Distópica</text>
+
+</svg>

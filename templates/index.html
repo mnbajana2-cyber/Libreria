@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MebyTech Libris</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .toast-exit {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-3 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- ======================================================== -->
+    <!-- PORTAL DE ACCESO OBLIGATORIO (LOGIN & REGISTRO) -->
+    <!-- ======================================================== -->
+    <div id="auth-portal" class="min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 py-12">
+        <div class="max-w-md w-full space-y-6">
+            
+            <!-- Logo & Presentación -->
+            <div class="text-center">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center shadow-xl shadow-indigo-500/20 text-white text-3xl mb-4">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight">MebyTech Libris</h2>
+                <div class="mt-3 inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-900/60 text-indigo-300 border border-indigo-700/50">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                    <span>Acceso protegido por credenciales</span>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Autenticación -->
+            <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-800 border border-slate-100">
+                <!-- Conmutador de Pestañas -->
+                <div id="auth-tabs-container" class="flex bg-slate-100 p-1.5 rounded-2xl mb-6 border border-slate-200">
+                    <button type="button" id="tab-login" class="flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all">
+                        Iniciar Sesión
+                    </button>
+                    <button type="button" id="tab-register" class="flex-1 py-2 text-xs sm:text-sm font-bold rounded-xl text-slate-500 hover:text-slate-800 transition-all">
+                        Crear Cuenta
+                    </button>
+                </div>
+
+                <!-- Formulario Iniciar Sesión -->
+                <form id="form-login" class="space-y-4" onsubmit="event.preventDefault();">
+                    <!-- Helper / Credenciales Demo Administrador -->
+                    <div class="p-3 bg-indigo-50/80 border border-indigo-100 rounded-2xl flex items-center justify-between text-xs text-indigo-900">
+                        <div class="space-y-0.5">
+                            <span class="font-bold flex items-center space-x-1">
+                                <i class="fa-solid fa-crown text-amber-500 text-xs"></i>
+                                <span>Administrador Demo:</span>
+                            </span>
+                            <p class="text-[11px] text-indigo-700 font-mono">admin@mebytech.com &bull; admin123</p>
+                        </div>
+                        <button type="button" id="btn-fill-admin" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all hover:scale-105 active:scale-95" title="Autocompletar credenciales de Administrador">
+                            Rellenar
+                        </button>
+                    </div>
+
+                    <div>
+                        <label for="login-email" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Correo Electrónico</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-envelope text-sm"></i>
+                            </span>
+                            <input type="email" id="login-email" required placeholder="admin@mebytech.com" class="w-full pl-10 pr-3.5 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="login-password" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Contraseña</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                            <button type="button" id="btn-toggle-login-pass" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600" title="Ver / Ocultar contraseña">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs py-1">
+                        <label class="flex items-center space-x-2 text-slate-600 hover:text-slate-800 cursor-pointer select-none">
+                            <input type="checkbox" id="login-remember-me" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="font-medium">Recordar usuario</span>
+                        </label>
+                        <button type="button" id="link-to-recover" class="font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
+
+                    <button type="submit" id="btn-submit-login" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        <span>Ingresar a la Biblioteca</span>
+                    </button>
+
+                    <div class="pt-4 border-t border-slate-100 text-center">
+                        <p class="text-xs text-slate-500">
+                            ¿Aún no tienes cuenta? 
+                            <button type="button" id="link-to-register" class="font-bold text-indigo-600 hover:text-indigo-800 transition-colors underline-offset-2 hover:underline">
+                                Regístrate aquí
+                            </button>
+                        </p>
+                    </div>
+                </form>
+
+                <!-- Formulario Crear Cuenta -->
+                <form id="form-register" class="space-y-4 hidden" onsubmit="event.preventDefault();">
+                    <div>
+                        <label for="reg-name" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Nombre Completo</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-user text-sm"></i>
+                            </span>
+                            <input type="text" id="reg-name" required placeholder="Tu nombre y apellido" class="w-full pl-10 pr-3.5 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="reg-email" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Correo Electrónico</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-envelope text-sm"></i>
+                            </span>
+                            <input type="email" id="reg-email" required placeholder="tu.correo@ejemplo.com" class="w-full pl-10 pr-3.5 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="reg-password" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Contraseña Segura</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="reg-password" required placeholder="Crea una contraseña segura" class="w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                            <button type="button" id="btn-toggle-reg-pass" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600" title="Ver / Ocultar contraseña">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de Requisitos de Contraseña -->
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-xs">
+                        <p class="font-bold text-slate-700 flex items-center justify-between">
+                            <span>Seguridad de contraseña:</span>
+                            <span id="reg-pass-strength" class="text-rose-500 font-semibold">Insegura</span>
+                        </p>
+                        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                            <div id="reg-pass-bar" class="bg-rose-500 h-full w-1/4 transition-all duration-300"></div>
+                        </div>
+                        <ul class="text-[11px] text-slate-500 space-y-1 pt-1">
+                            <li id="req-reg-len" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Mínimo 6 caracteres</span>
+                            </li>
+                            <li id="req-reg-num" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Al menos 1 número (0-9)</span>
+                            </li>
+                            <li id="req-reg-spec" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Al menos 1 carácter especial (!@#$%&*?...)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" id="btn-submit-register" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Crear Cuenta e Ingresar</span>
+                    </button>
+
+                    <div class="pt-4 border-t border-slate-100 text-center">
+                        <p class="text-xs text-slate-500">
+                            ¿Ya tienes una cuenta? 
+                            <button type="button" id="link-to-login" class="font-bold text-emerald-600 hover:text-emerald-800 transition-colors underline-offset-2 hover:underline">
+                                Inicia sesión aquí
+                            </button>
+                        </p>
+                    </div>
+                </form>
+
+                <!-- Formulario Recuperar Contraseña -->
+                <form id="form-recover" class="space-y-4 hidden" onsubmit="event.preventDefault();">
+                    <div class="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                        <button type="button" id="btn-back-from-recover" class="text-slate-400 hover:text-slate-600 p-1">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h4 class="text-sm font-bold text-slate-800">Recuperación de Contraseña</h4>
+                    </div>
+
+                    <div>
+                        <label for="rec-email" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Correo Registrado</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-envelope text-sm"></i>
+                            </span>
+                            <input type="email" id="rec-email" required placeholder="tu.correo@ejemplo.com" class="w-full pl-10 pr-3.5 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="rec-password" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Nueva Contraseña</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="rec-password" required placeholder="Ingresa tu nueva clave segura" class="w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                            <button type="button" id="btn-toggle-rec-pass" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600" title="Ver / Ocultar contraseña">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="rec-password-confirm" class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Confirmar Nueva Contraseña</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-shield-halved text-sm"></i>
+                            </span>
+                            <input type="password" id="rec-password-confirm" required placeholder="Repite tu nueva contraseña" class="w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition-all">
+                            <button type="button" id="btn-toggle-rec-pass-confirm" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600" title="Ver / Ocultar contraseña">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de Requisitos de Contraseña -->
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-xs">
+                        <p class="font-bold text-slate-700 flex items-center justify-between">
+                            <span>Requisitos de seguridad:</span>
+                            <span id="rec-pass-strength" class="text-rose-500 font-semibold">Pendiente</span>
+                        </p>
+                        <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                            <div id="rec-pass-bar" class="bg-rose-500 h-full w-1/4 transition-all duration-300"></div>
+                        </div>
+                        <ul class="text-[11px] text-slate-500 space-y-1 pt-1">
+                            <li id="req-rec-len" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Mínimo 6 caracteres</span>
+                            </li>
+                            <li id="req-rec-num" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Al menos 1 número (0-9)</span>
+                            </li>
+                            <li id="req-rec-spec" class="flex items-center space-x-1.5 text-slate-400">
+                                <i class="fa-solid fa-circle-xmark"></i> <span>Al menos 1 carácter especial (!@#$%&*?...)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" id="btn-submit-recover" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Restablecer Contraseña</span>
+                    </button>
+
+                    <div class="pt-4 border-t border-slate-100 text-center">
+                        <button type="button" id="link-recover-to-login" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+                            ← Volver al inicio de sesión
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer Informativo -->
+            <p class="text-center text-xs text-slate-400">
+                &copy; 2026 MebyTech Libris • Base de Datos Relacional Normalizada en 3NF
+            </p>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- DASHBOARD DE LA BIBLIOTECA (SÓLO TRAS INICIAR SESIÓN) -->
+    <!-- ======================================================== -->
+    <div id="app-dashboard" class="hidden flex-1 flex flex-col min-h-screen">
+
+        <!-- Barra de Navegación Superior -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                    <i class="fa-solid fa-book-bookmark text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-xl leading-tight text-slate-900 tracking-tight">MebyTech Libris</h1>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas del Header -->
+            <div class="flex items-center space-x-2.5">
+                <button id="btn-open-comments" class="inline-flex items-center space-x-2 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors" title="Buzón de Comentarios y Reseñas">
+                    <i class="fa-solid fa-comments text-indigo-600"></i>
+                    <span class="hidden sm:inline">Comentarios</span>
+                </button>
+
+                <button id="btn-open-access-logs" class="admin-only hidden inline-flex items-center space-x-2 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors" title="Historial y Auditoría de Accesos (Admin)">
+                    <i class="fa-solid fa-shield-halved text-indigo-600"></i>
+                    <span class="hidden sm:inline">Historial Accesos</span>
+                </button>
+
+                <button id="btn-open-create-book" class="admin-only hidden inline-flex items-center space-x-2 px-3.5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-200 transition-colors">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Nuevo Libro</span>
+                </button>
+
+                <button id="btn-open-user-modal" class="admin-only hidden inline-flex items-center space-x-2 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors" title="Registrar Lector">
+                    <i class="fa-solid fa-user-plus text-slate-500"></i>
+                    <span class="hidden sm:inline">Nuevo Lector</span>
+                </button>
+
+                <!-- Perfil de Usuario Autenticado / Sesión -->
+                <div id="auth-user-container" class="hidden flex items-center space-x-2 pl-2 border-l border-slate-200">
+                    <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 py-1 px-2.5 rounded-xl text-xs font-semibold text-slate-700">
+                        <span id="auth-user-avatar" class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">A</span>
+                        <div class="flex flex-col text-left">
+                            <div class="flex items-center space-x-1.5">
+                                <span id="auth-user-name" class="max-w-[120px] truncate text-slate-800 leading-tight">Invitado</span>
+                                <span id="auth-user-role-badge" class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-indigo-100 text-indigo-700">Admin</span>
+                            </div>
+                            <span id="auth-user-loans-badge" class="text-[10px] text-slate-400 font-normal">0/3 libros activos</span>
+                        </div>
+                    </div>
+                    <button id="btn-logout" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 border border-rose-200/80 rounded-xl transition-all shadow-sm" title="Cerrar Sesión">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Salir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Tarjetas de Información Rápida (Interactivas) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- 1. Total Libros -->
+            <div id="card-stat-books" role="button" tabindex="0" class="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-400 hover:-translate-y-1 transition-all duration-200 cursor-pointer flex items-center justify-between" title="Click para explorar el catálogo de libros">
+                <div>
+                    <div class="flex items-center space-x-1.5">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-blue-600 transition-colors">Total Libros</p>
+                        <i class="fa-solid fa-arrow-down text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <h3 id="stat-total-books" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    <span class="text-[11px] font-medium text-blue-600 group-hover:underline">Explorar catálogo ↓</span>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+            </div>
+
+            <!-- 2. Autores Registrados -->
+            <div id="card-stat-authors" role="button" tabindex="0" class="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-purple-400 hover:-translate-y-1 transition-all duration-200 cursor-pointer flex items-center justify-between" title="Click para ver la lista de autores registrados">
+                <div>
+                    <div class="flex items-center space-x-1.5">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-purple-600 transition-colors">Autores Registrados</p>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <h3 id="stat-total-authors" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    <span class="text-[11px] font-medium text-purple-600 group-hover:underline">Ver autores →</span>
+                </div>
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl group-hover:bg-purple-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+            </div>
+
+            <!-- 3. Usuarios Activos -->
+            <div id="card-stat-users" role="button" tabindex="0" class="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-400 hover:-translate-y-1 transition-all duration-200 cursor-pointer flex items-center justify-between" title="Click para ver la lista de usuarios y lectores">
+                <div>
+                    <div class="flex items-center space-x-1.5">
+                        <p id="stat-label-users" class="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-emerald-600 transition-colors">Usuarios Activos</p>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <h3 id="stat-total-users" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    <span id="stat-link-users" class="text-[11px] font-medium text-emerald-600 group-hover:underline">Ver lectores →</span>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+
+            <!-- 4. Préstamos en Curso -->
+            <div id="card-stat-loans" role="button" tabindex="0" class="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-amber-400 hover:-translate-y-1 transition-all duration-200 cursor-pointer flex items-center justify-between" title="Click para ver préstamos activos y devoluciones">
+                <div>
+                    <div class="flex items-center space-x-1.5">
+                        <p id="stat-label-loans" class="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-amber-600 transition-colors">Préstamos en Curso</p>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <h3 id="stat-total-loans" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    <span id="stat-link-loans" class="text-[11px] font-medium text-amber-600 group-hover:underline">Gestionar préstamos →</span>
+                </div>
+                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-handshake-angle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Búsqueda, Filtros y Selector de Vista -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full md:max-w-md">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Buscar por título, autor o género..." 
+                    class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-slate-700 placeholder-slate-400"
+                />
+                <span id="search-spinner" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-indigo-500 hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                </span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                <div class="hidden items-center space-x-2 text-sm text-slate-500">
+                    <span class="hidden sm:inline">Usuario activo:</span>
+                    <select id="active-user-select" class="bg-slate-100 border border-slate-200 rounded-lg py-1.5 px-3 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <!-- Opciones de usuarios cargadas dinámicamente -->
+                    </select>
+                </div>
+
+                <!-- Selector de Vista: Cuadrícula con Portadas vs Tabla Clásica -->
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button id="btn-view-grid" type="button" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-indigo-600 shadow-sm transition-all" title="Vista de Portadas">
+                        <i class="fa-solid fa-grip"></i>
+                        <span class="hidden sm:inline">Portadas</span>
+                    </button>
+                    <button id="btn-view-table" type="button" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800 transition-all" title="Vista de Tabla">
+                        <i class="fa-solid fa-list"></i>
+                        <span class="hidden sm:inline">Tabla</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestañas de Colecciones del Catálogo (Todos / Recomendados / Vistos Recientemente / Favoritos) -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-2 mb-6 border-b border-slate-200/80">
+            <button type="button" class="btn-collection-tab active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 bg-indigo-600 text-white shadow-sm" data-tab="all">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Todos los Libros</span>
+                <span id="tab-count-all" class="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-white/20 text-white font-mono">0</span>
+            </button>
+            <button type="button" class="btn-collection-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100" data-tab="available">
+                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                <span>Libros Disponibles</span>
+                <span id="tab-count-available" class="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-mono">0</span>
+            </button>
+            <button type="button" class="btn-collection-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100" data-tab="recommended">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                <span>Recomendados (★ 4-5)</span>
+                <span id="tab-count-recommended" class="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-mono">0</span>
+            </button>
+            <button type="button" class="btn-collection-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100" data-tab="recent">
+                <i class="fa-solid fa-clock-rotate-left text-blue-500"></i>
+                <span>Vistos Recientemente</span>
+                <span id="tab-count-recent" class="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-blue-100 text-blue-800 font-mono">0</span>
+            </button>
+            <button type="button" class="btn-collection-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100" data-tab="favorites">
+                <i class="fa-solid fa-star text-amber-400"></i>
+                <span>Mis Favoritos</span>
+                <span id="tab-count-favorites" class="ml-1 px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-mono">0</span>
+            </button>
+        </div>
+
+        <!-- VISTA 1: Cuadrícula de Libros con Portadas (Grid View) -->
+        <div id="books-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <!-- Tarjetas de libros inyectadas por JS -->
+        </div>
+
+        <!-- VISTA 2: Tabla de Libros (Table View) -->
+        <div id="books-table-container" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            <th class="py-3.5 px-6">Portada / ID</th>
+                            <th class="py-3.5 px-6">Título de la Obra</th>
+                            <th class="py-3.5 px-6">Autor (3NF)</th>
+                            <th class="py-3.5 px-6">Género</th>
+                            <th class="py-3.5 px-6">Año</th>
+                            <th class="py-3.5 px-6 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="books-table-body" class="divide-y divide-slate-100 text-sm">
+                        <!-- Filas de libros inyectadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Estado Vacío -->
+        <div id="empty-state" class="hidden py-16 text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h3 class="text-base font-semibold text-slate-700">No se encontraron libros</h3>
+            <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">Prueba ajustando el término de búsqueda o crea una nueva obra literaria.</p>
+        </div>
+
+    </main>
+    </div> <!-- Fin #app-dashboard -->
+
+    <!-- ======================================================== -->
+    <!-- MODAL 1: Crear / Editar Libro -->
+    <!-- ======================================================== -->
+    <div id="modal-book" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <h3 id="modal-book-title" class="text-lg font-bold text-slate-800">Nuevo Libro</h3>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="form-book" class="p-6 space-y-4">
+                <input type="hidden" id="book-id">
+                
+                <div>
+                    <label for="book-title" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Título de la Obra *</label>
+                    <input type="text" id="book-title" required placeholder="Ej. El fin de la eternidad" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="book-year" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Año de Publicación *</label>
+                        <input type="number" id="book-year" required min="1000" max="2100" placeholder="1955" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="book-genre" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Género Literario (3NF) *</label>
+                        <select id="book-genre" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                            <option value="">Seleccione Género...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="book-author" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Autor (3NF) *</label>
+                    <select id="book-author" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        <option value="">Seleccione Autor...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="book-cover" class="block text-xs font-semibold text-slate-600 uppercase">Portada del Libro</label>
+                        <span class="text-[11px] text-indigo-600 font-medium">Asignación automática o personalizada</span>
+                    </div>
+                    <div class="flex space-x-3 items-center">
+                        <input type="text" id="book-cover" placeholder="/static/img/covers/default-book.svg (o URL)" class="flex-1 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <div class="w-12 h-16 bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center shadow-inner">
+                            <img id="book-cover-preview" src="/static/img/covers/default-book.svg" alt="Vista previa" class="w-full h-full object-cover">
+                            <i id="book-cover-placeholder" class="fa-solid fa-image text-slate-400 text-sm hidden"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Carga de imagen desde galería / archivos locales -->
+                    <div class="mt-2.5 flex items-center space-x-2.5">
+                        <input type="file" id="book-cover-file" accept="image/*" class="hidden">
+                        <button type="button" id="btn-trigger-upload-cover" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-xl border border-indigo-200 transition-colors flex items-center space-x-1.5 shadow-sm">
+                            <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                            <span>Subir portada desde mi galería</span>
+                        </button>
+                        <span id="cover-upload-status" class="text-xs text-indigo-600 font-medium hidden">
+                            <i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Subiendo imagen...
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Sube una foto desde tu galería o dispositivo, o deja vacío para usar la portada predeterminada.</p>
+                </div>
+
+                <div>
+                    <label for="book-content" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Contenido / Fragmento de la Obra</label>
+                    <textarea id="book-content" rows="4" placeholder="Escribe o pega aquí el fragmento, sinopsis o primer capítulo del libro..." class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-serif"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" id="btn-save-book" class="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-200 transition-colors">Guardar Libro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL LECTOR: Visualizador de Lectura de la Obra -->
+    <!-- ======================================================== -->
+    <div id="modal-read-book" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="bg-amber-50/95 text-amber-950 rounded-2xl max-w-2xl w-full shadow-2xl border border-amber-200 overflow-hidden transform transition-all flex flex-col max-h-[85vh]">
+            <div class="px-6 py-4 border-b border-amber-200/60 flex items-center justify-between bg-amber-100/70">
+                <div class="flex items-center space-x-3.5">
+                    <img id="read-book-cover" src="" alt="Portada" class="w-11 h-16 rounded-md object-cover shadow border border-amber-200/90 flex-shrink-0">
+                    <div>
+                        <h3 id="read-book-title" class="text-base font-bold text-slate-900">Título de la Obra</h3>
+                        <p id="read-book-meta" class="text-xs text-amber-800">Autor • Género • Año</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal text-amber-800/60 hover:text-amber-950 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Contenido de la lectura con tipografía literaria -->
+            <div class="p-8 overflow-y-auto font-serif leading-relaxed text-slate-800 text-base space-y-4" id="read-book-content">
+                <!-- Párrafos inyectados dinámicamente -->
+            </div>
+
+            <div class="px-6 py-3.5 bg-amber-100/40 border-t border-amber-200/60 flex justify-between items-center text-xs text-amber-800">
+                <span id="read-book-mode-badge"><i class="fa-solid fa-bookmark mr-1"></i> Modo Lectura Digital</span>
+                <button type="button" class="btn-close-modal px-4 py-1.5 font-medium text-slate-700 bg-white border border-amber-200 hover:bg-amber-50 rounded-lg shadow-sm transition-colors">
+                    Cerrar Lectura
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 2: Registrar Préstamo Transaccional -->
+    <!-- ======================================================== -->
+    <div id="modal-loan" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-50/50">
+                <div class="flex items-center space-x-2 text-emerald-700">
+                    <i class="fa-solid fa-handshake"></i>
+                    <h3 class="text-base font-bold">Solicitar Préstamo</h3>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="form-loan" class="p-6 space-y-4">
+                <input type="hidden" id="loan-book-id">
+
+                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Libro seleccionado:</p>
+                    <h4 id="loan-book-title" class="font-bold text-slate-800 text-sm mt-0.5">Título</h4>
+                    <p id="loan-book-author" class="text-xs text-slate-500">Autor</p>
+                </div>
+
+                <div id="loan-user-admin-container" class="admin-only hidden">
+                    <label for="loan-user" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Usuario Solicitante (Asignación Admin) *</label>
+                    <select id="loan-user" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                        <!-- Opciones de usuario -->
+                    </select>
+                </div>
+
+                <div id="loan-user-reader-container" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Lector Solicitante</label>
+                    <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-user-check text-emerald-600"></i>
+                            <span id="loan-user-reader-name" class="font-bold text-slate-800">Mi Usuario</span>
+                        </div>
+                        <span id="loan-user-reader-loans" class="text-xs text-slate-500 font-medium">0/3 libros</span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-amber-600 mt-1 flex items-center space-x-1">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Máximo permitido: 3 libros activos por usuario.</span>
+                </p>
+
+                <div>
+                    <label for="loan-deadline" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Fecha Límite de Devolución *</label>
+                    <input type="date" id="loan-deadline" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm shadow-emerald-200 transition-colors">Confirmar Préstamo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 3: Registrar Usuario -->
+    <!-- ======================================================== -->
+    <div id="modal-user" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <h3 class="text-base font-bold text-slate-800">Registrar Nuevo Usuario</h3>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="form-user" class="p-6 space-y-4">
+                <div>
+                    <label for="user-name" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nombre Completo *</label>
+                    <input type="text" id="user-name" required placeholder="Ej. Mateo Gómez" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="user-email" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Correo Electrónico *</label>
+                    <input type="email" id="user-email" required placeholder="mateo.gomez@example.com" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label for="user-password" class="block text-xs font-semibold text-slate-600 uppercase mb-1">Contraseña *</label>
+                    <input type="password" id="user-password" placeholder="Mínimo 6 caracteres" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm shadow-indigo-200 transition-colors">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 4: Historial de Préstamos y Devoluciones -->
+    <!-- ======================================================== -->
+    <div id="modal-loans-list" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i>
+                    <h3 id="modal-loans-title" class="text-base font-bold text-slate-800">Control y Retorno de Préstamos</h3>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200 font-semibold">
+                                <th class="py-2.5 px-4">Libro</th>
+                                <th class="py-2.5 px-4">Usuario</th>
+                                <th class="py-2.5 px-4">Fecha Límite</th>
+                                <th class="py-2.5 px-4">Estado</th>
+                                <th id="th-loan-actions" class="py-2.5 px-4 text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loans-table-body" class="divide-y divide-slate-100">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 text-right">
+                <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ======================================================== -->
+    <!-- MODAL 5: Lista de Autores Registrados (3NF) -->
+    <!-- ======================================================== -->
+    <div id="modal-authors-list" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all flex flex-col max-h-[85vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                        <i class="fa-solid fa-feather-pointed"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800 leading-tight">Autores Registrados (3NF)</h3>
+                        <p class="text-xs text-slate-400">Catálogo normalizado de autores y sus obras asociadas</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Barra de Acciones del Modal de Autores -->
+            <div class="p-4 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="relative w-full sm:w-64">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="authors-search-input" placeholder="Buscar autor..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <!-- Formulario Rápido Agregar Autor -->
+                <form id="form-quick-add-author" class="admin-only hidden flex gap-2 w-full sm:w-auto">
+                    <input type="text" id="quick-author-name" required placeholder="Nuevo nombre de autor..." class="flex-1 sm:w-48 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="submit" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center space-x-1 flex-shrink-0">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                        <span>Agregar</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabla de Autores -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200 font-semibold">
+                                <th class="py-2.5 px-4">ID</th>
+                                <th class="py-2.5 px-4">Nombre del Autor</th>
+                                <th class="py-2.5 px-4 text-center">Obras en Biblioteca</th>
+                                <th class="py-2.5 px-4 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="authors-table-body" class="divide-y divide-slate-100">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 text-right">
+                <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 6: Lista de Usuarios Registrados -->
+    <!-- ======================================================== -->
+    <div id="modal-users-list" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all flex flex-col max-h-[85vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800 leading-tight">Usuarios y Lectores Registrados</h3>
+                        <p class="text-xs text-slate-400">Control de miembros, roles y límite transaccional de 3 préstamos</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Barra de Acciones del Modal de Usuarios -->
+            <div class="p-4 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="relative w-full sm:w-72">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="users-search-input" placeholder="Buscar por nombre o correo..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <button type="button" id="btn-open-user-from-list" class="admin-only hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center space-x-1.5">
+                    <i class="fa-solid fa-user-plus text-[10px]"></i>
+                    <span>+ Registrar Nuevo Usuario</span>
+                </button>
+            </div>
+
+            <!-- Tabla de Usuarios -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200 font-semibold">
+                                <th class="py-2.5 px-4">ID</th>
+                                <th class="py-2.5 px-4">Lector / Usuario</th>
+                                <th class="py-2.5 px-4">Correo</th>
+                                <th class="py-2.5 px-4">Rol</th>
+                                <th class="py-2.5 px-4 text-center">Libros Activos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-slate-100">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 text-right">
+                <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 7: Muro de Comentarios y Reseñas de la Comunidad -->
+    <!-- ======================================================== -->
+    <div id="modal-comments" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all flex flex-col max-h-[88vh]">
+            <!-- Encabezado del Modal -->
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800 leading-tight">Comunidad y Reseñas Literarias</h3>
+                        <p class="text-xs text-slate-400">Comparte opiniones, recomendaciones y valoraciones con los lectores</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Formulario de Nuevo Comentario -->
+            <div class="p-5 bg-slate-50/80 border-b border-slate-100">
+                <form id="form-comment" class="space-y-3">
+                    <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+                        <!-- Selector de tema / obra con buscador integrado -->
+                        <div class="w-full sm:flex-1 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label for="comment-book-select" class="block text-[11px] font-semibold text-slate-500 uppercase">
+                                    Obra Literaria o Tema:
+                                </label>
+                                <span id="comment-search-feedback" class="text-[10px] text-indigo-600 font-medium"></span>
+                            </div>
+
+                            <!-- Buscador rápido por título o autor con botón -->
+                            <div class="flex items-center space-x-1.5">
+                                <div class="relative flex-1">
+                                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                        <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
+                                    </span>
+                                    <input type="text" id="comment-book-search" placeholder="Buscar por título o autor (ej: García Márquez, 1984)..." class="w-full pl-8 pr-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 placeholder-slate-400">
+                                </div>
+                                <button type="button" id="btn-search-comment-book" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center space-x-1" title="Buscar libro">
+                                    <i class="fa-solid fa-filter text-[10px]"></i>
+                                    <span>Buscar</span>
+                                </button>
+                                <button type="button" id="btn-clear-comment-book-search" class="hidden px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-medium transition-colors" title="Ver todos">
+                                    <i class="fa-solid fa-rotate-left text-[11px]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Menú desplegable filtrado -->
+                            <select id="comment-book-select" class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-700">
+                                <option value="">💬 Opinión general sobre la biblioteca</option>
+                                <!-- Inyectado dinámicamente con libros -->
+                            </select>
+                        </div>
+
+                        <!-- Selector de Estrellas -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Calificación:</label>
+                            <div id="comment-star-rating" class="flex items-center space-x-1 text-amber-400 text-base cursor-pointer select-none">
+                                <i class="fa-solid fa-star star-btn" data-rating="1"></i>
+                                <i class="fa-solid fa-star star-btn" data-rating="2"></i>
+                                <i class="fa-solid fa-star star-btn" data-rating="3"></i>
+                                <i class="fa-solid fa-star star-btn" data-rating="4"></i>
+                                <i class="fa-solid fa-star star-btn" data-rating="5"></i>
+                                <span id="comment-rating-label" class="text-xs font-bold text-slate-700 ml-1.5">5/5</span>
+                            </div>
+                            <input type="hidden" id="comment-rating-value" value="5">
+                        </div>
+                    </div>
+
+                    <div>
+                        <textarea id="comment-content" required rows="2" placeholder="Escribe tu opinión, recomendación o reseña de lectura..." class="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 placeholder-slate-400"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span id="comment-author-badge" class="text-xs text-slate-500 flex items-center space-x-1.5">
+                            <i class="fa-solid fa-user-pen text-[11px] text-indigo-600"></i>
+                            <span id="comment-author-name">Publicando como...</span>
+                        </span>
+                        <button type="submit" id="btn-submit-comment" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm shadow-indigo-200 transition-all flex items-center space-x-1.5">
+                            <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                            <span>Publicar Comentario</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista / Feed de Comentarios -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-3.5" id="comments-container">
+                <!-- Inyectado por JS -->
+            </div>
+
+            <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span id="comments-count-stat">Cargando comentarios...</span>
+                <button type="button" class="btn-close-modal px-4 py-1.5 font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 8: Historial de Accesos e Inicios de Sesión (Admin) -->
+    <!-- ======================================================== -->
+    <div id="modal-access-logs" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all flex flex-col max-h-[85vh]">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800 leading-tight">Historial de Accesos y Auditoría</h3>
+                        <p class="text-xs text-slate-400">Registro de inicios de sesión y control de acceso al sistema</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Filtros / Buscador del Historial -->
+            <div class="p-4 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="relative w-full sm:w-72">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="access-logs-search" placeholder="Buscar por usuario, correo o IP..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+                    <span id="access-logs-count" class="text-xs text-slate-500 font-medium">0 registros</span>
+                    <button type="button" id="btn-refresh-access-logs" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors flex items-center space-x-1.5" title="Actualizar registros">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Registros -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200 font-semibold">
+                                <th class="py-2.5 px-4"># ID</th>
+                                <th class="py-2.5 px-4">Usuario</th>
+                                <th class="py-2.5 px-4">Correo Electrónico</th>
+                                <th class="py-2.5 px-4">Rol</th>
+                                <th class="py-2.5 px-4">Fecha y Hora</th>
+                                <th class="py-2.5 px-4">IP Cliente</th>
+                                <th class="py-2.5 px-4 text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="access-logs-table-body" class="divide-y divide-slate-100">
+                            <!-- Inyectado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 text-right">
+                <button type="button" class="btn-close-modal px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de la Aplicación -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
